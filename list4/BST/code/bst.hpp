@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <iomanip>
-#include "../include/lib.hpp"
+#include "../../include/lib.hpp"
 
 class BST
 {
@@ -130,7 +130,7 @@ private:
     }
 
 public:
-    BST() : root(nullptr) {}
+    BST(void) : root(nullptr) {}
 
     void insert(int key)
     {

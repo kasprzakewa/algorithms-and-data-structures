@@ -1,14 +1,14 @@
 #include "bst.hpp"
-#include "../generators/ascending.hpp"
-#include "../generators/random.hpp"
+#include "../../generators/ascending.hpp"
+#include "../../generators/random.hpp"
 #include <vector>
 #include <chrono>
 #include <cstdlib>
 
 int main(void)
 {
-    FILE* file_insert = fopen("bst_insert_random.csv", "w");
-    FILE* file_delete = fopen("bst_delete_random.csv", "w");
+    FILE* file_insert = fopen("insert_random.csv", "w");
+    FILE* file_delete = fopen("delete_random.csv", "w");
 
     for (int n = 10000; n <= 100000; n+=10000)
     {

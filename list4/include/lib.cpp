@@ -39,7 +39,7 @@ RBTNode* read_node(RBTNode* node)
     return node;
 }
 
-SPTNode* read_node(SPTNode* node)
+SplayNode* read_node(SplayNode* node)
 {
     reads++;
     return node;
@@ -57,7 +57,7 @@ RBTNode* write_node(RBTNode* node)
     return node;
 }
 
-SPTNode* write_node(SPTNode* node)
+SplayNode* write_node(SplayNode* node)
 {
     writes++;
     return node;

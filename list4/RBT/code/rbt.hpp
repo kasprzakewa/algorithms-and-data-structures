@@ -409,7 +409,7 @@ private:
     
 
 public:
-    RBT() : root(nullptr) {}
+    RBT(void) : root(nullptr) {}
 
     void insert(int key) 
     {
@@ -427,17 +427,17 @@ public:
         deleteNode(node);
     }
 
-    int height() 
+    int height(void) 
     {
         return height(root);
     }
 
-    void printTree() 
+    void printTree(void) 
     {
         printTree(root, "", true);
     }
 
-    RBTNode* getRoot() 
+    RBTNode* getRoot(void) 
     {
         return root;
     }

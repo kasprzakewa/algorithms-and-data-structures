@@ -1,4 +1,4 @@
-#include "spt.hpp"
+#include "splay.hpp"
 #include "../generators/ascending.hpp"
 #include "../generators/random.hpp"
 #include <vector>
@@ -7,8 +7,8 @@
 
 int main(void)
 {
-    FILE* file_insert = fopen("spt_insert_asc.csv", "w");
-    FILE* file_delete = fopen("spt_delete_asc.csv", "w");
+    FILE* file_insert = fopen("insert_random.csv", "w");
+    FILE* file_delete = fopen("delete_random.csv", "w");
 
     for (int n = 10000; n <= 100000; n+=10000)
     {
@@ -20,16 +20,16 @@ int main(void)
         for (int k = 0; k < 20; k++)
         {
             clear();
-            std::vector<int> keys = ascending(n);
+            std::vector<int> keys = random(n);
 
-            SPT spt;
+            Splay splay;
 
             for (int key : keys)
             {
-                spt.insert(key);
+                splay.insert(key);
             }
 
-            int height = spt.height();
+            int height = splay.height();
             fprintf(file_insert, "%d %ld %ld %ld %d\n", n, comparisons, reads, writes, height);
 
             clear();
@@ -37,10 +37,10 @@ int main(void)
 
             for (int key : keysToDelete)
             {
-                spt.remove(key);
+                splay.remove(key);
             }
 
-            int height2 = spt.height();
+            int height2 = splay.height();
 
             fprintf(file_delete, "%d %ld %ld %ld %d\n", n, comparisons, reads, writes, height2);
         }

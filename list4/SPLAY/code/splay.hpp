@@ -1,34 +1,34 @@
-#ifndef SPT_HPP
-#define SPT_HPP
+#ifndef SPLAY_HPP
+#define SPLAY_HPP
 
 #include <iostream>
 #include "../include/lib.hpp"
 
-class SPT
+class Splay
 {
 private:
 
-    SPTNode* root;
+    SplayNode* root;
 
-    SPTNode* rightRotate(SPTNode* x) 
+    SplayNode* rightRotate(SplayNode* x) 
     {
-        SPTNode* y = write_node(read_node(x->left));
+        SplayNode* y = write_node(read_node(x->left));
         x->left = write_node(read_node(y->right));
         y->right = write_node(x);
 
         return y;
     }
 
-    SPTNode* leftRotate(SPTNode* x) 
+    SplayNode* leftRotate(SplayNode* x) 
     {
-        SPTNode* y = write_node(read_node(x->right));
+        SplayNode* y = write_node(read_node(x->right));
         x->right = write_node(read_node(y->left));
         y->left = write_node(x);
 
         return y;
     }
 
-    SPTNode* splay(SPTNode* root, int key) 
+    SplayNode* splay(SplayNode* root, int key) 
     {
         if (root == nullptr || root->key == key) 
             return root;
@@ -75,16 +75,16 @@ private:
         }
     }
 
-    SPTNode* insert(SPTNode* root, int key) 
+    SplayNode* insert(SplayNode* root, int key) 
     {
         if (root == nullptr) 
-            return new SPTNode(key);
+            return new SplayNode(key);
 
         root = write_node(splay(root, key));
 
         if (compare_nodes(key, root->key)) 
         {
-            SPTNode* newNode = new SPTNode(key);
+            SplayNode* newNode = new SplayNode(key);
 
             newNode->right = write_node(root);
             newNode->left = write_node(read_node(root->left));
@@ -94,7 +94,7 @@ private:
         } 
         else if (compare_nodes(root->key, key)) 
         {
-            SPTNode* newNode = new SPTNode(key);
+            SplayNode* newNode = new SplayNode(key);
 
             newNode->left = write_node(root);
             newNode->right = write_node(read_node(root->right));
@@ -108,7 +108,7 @@ private:
         }
     }
 
-    SPTNode* findMax(SPTNode* root) 
+    SplayNode* findMax(SplayNode* root) 
     {
         while (read_node(root->right) != nullptr) 
             root = write_node(read_node(root->right));
@@ -116,17 +116,19 @@ private:
         return root;
     }
 
-    SPTNode* deleteNode(SPTNode* root, int key) 
+    SplayNode* deleteNode(SplayNode* root, int key) 
     {
         if (root == nullptr) return nullptr;
 
-        root = write_node(splay(root, key));
+        root = splay(root, key);
 
         if (root->key != key) 
+        {
             comparisons++;
             return root;
+        }
 
-        SPTNode* temp;
+        SplayNode* temp;
         if (read_node(root->left) == nullptr) 
         {
             temp = write_node(root);
@@ -143,7 +145,8 @@ private:
         return root;
     }
 
-    void printTree(SPTNode* node, std::string indent, bool isLeft) 
+
+    void printTree(SplayNode* node, std::string indent, bool isLeft) 
     {
         if (node != nullptr) 
         {
@@ -166,7 +169,7 @@ private:
         }
     }
 
-    int height(SPTNode* node)
+    int height(SplayNode* node)
     {
         if (node == nullptr)
         {
@@ -180,7 +183,7 @@ private:
     }
 
 public:
-    SPT() : root(nullptr) {}
+    Splay(void) : root(nullptr) {}
 
     void insert(int key) 
     {
@@ -198,7 +201,7 @@ public:
         root = deleteNode(root, key);
     }
 
-    void printTree() 
+    void printTree(void) 
     {
         printTree(root, "", true);
     }

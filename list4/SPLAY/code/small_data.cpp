@@ -1,4 +1,4 @@
-#include "bst.hpp"
+#include "splay.hpp"
 #include "../generators/ascending.hpp"
 #include "../generators/random.hpp"
 #include <vector>
@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
 
     int n = std::stoi(argv[1]);
 
-    std::cout << PINK << "BINARY SEARCH TREE" << RESET << " n = " << n << std::endl;
+    std::cout << PINK << "SPLAY TREE" << RESET << " n = " << n << std::endl;
     std::cout << std::endl;
 
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
@@ -34,18 +34,20 @@ int main(int argc, char* argv[])
     }
     std::cout << std::endl;
 
-    BST bst;
+    Splay splay;
 
     for (int key : keys) 
     {
-        bst.insert(key);
+        splay.insert(key);
         std::cout << "insert " << MAGENTA << key << RESET << std::endl;
-        bst.printTree();
+        splay.printTree();
     }
 
+    int height = splay.height();
     std::cout << "comparisons: " << comparisons << std::endl;
     std::cout << "reads: " << reads << std::endl;
     std::cout << "writes: " << writes << std::endl;
+    std::cout << "height: " << height << std::endl;
     std::cout << std::endl;
 
     clear();
@@ -61,16 +63,18 @@ int main(int argc, char* argv[])
 
     for (int key : keysToDelete) 
     {
-        bst.deleteKey(key);
+        splay.remove(key);
         std::cout << "delete " << MAGENTA << key << RESET << std::endl;
-        bst.printTree();
+        splay.printTree();
     }
+
+    int height2 = splay.height();
 
     std::cout << "comparisons: " << comparisons << std::endl;
     std::cout << "reads: " << reads << std::endl;
     std::cout << "writes: " << writes << std::endl;
+    std::cout << "height: " << height2 << std::endl;
     std::cout << std::endl;
-
 
     return 0;
 }

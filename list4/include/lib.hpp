@@ -30,13 +30,13 @@ struct RBTNode
     RBTNode(int key) : key(key), left(nullptr), right(nullptr), parent(nullptr), color(RED) {}
 };
 
-struct SPTNode 
+struct SplayNode 
 {
     int key;
-    SPTNode* left;
-    SPTNode* right;
+    SplayNode* left;
+    SplayNode* right;
 
-    SPTNode(int key) : key(key), left(nullptr), right(nullptr) {}
+    SplayNode(int key) : key(key), left(nullptr), right(nullptr) {}
 };
 
 void clear();
@@ -44,10 +44,10 @@ bool compare_nodes(int a, int b);
 Node* read_node(Node* node);
 int read_node(int node);
 RBTNode* read_node(RBTNode* node);
-SPTNode* read_node(SPTNode* node);
+SplayNode* read_node(SplayNode* node);
 Node* write_node(Node* node);
 RBTNode* write_node(RBTNode* node);
-SPTNode* write_node(SPTNode* node);
+SplayNode* write_node(SplayNode* node);
 void write_node();
 
 #endif
