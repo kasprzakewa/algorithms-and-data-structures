@@ -1,8 +1,8 @@
 #include "lib.hpp"
 
-int comparisons;
-int reads;
-int writes;
+long comparisons;
+long reads;
+long writes;
 
 void clear()
 {
@@ -11,7 +11,7 @@ void clear()
     writes = 0;
 }
 
-bool compare(int a, int b)
+bool compare_nodes(int a, int b)
 {
     comparisons++;
 
@@ -21,9 +21,46 @@ bool compare(int a, int b)
     return false;
 }
 
-void read_node()
+Node* read_node(Node* node)
 {
     reads++;
+    return node;
+}
+
+int read_node(int node)
+{
+    reads++;
+    return node;
+}
+
+RBTNode* read_node(RBTNode* node)
+{
+    reads++;
+    return node;
+}
+
+SPTNode* read_node(SPTNode* node)
+{
+    reads++;
+    return node;
+}
+
+Node* write_node(Node* node)
+{
+    writes++;
+    return node;
+}
+
+RBTNode* write_node(RBTNode* node)
+{
+    writes++;
+    return node;
+}
+
+SPTNode* write_node(SPTNode* node)
+{
+    writes++;
+    return node;
 }
 
 void write_node()

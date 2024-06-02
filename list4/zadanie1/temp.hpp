@@ -48,44 +48,31 @@ private:
 
         if (compare_nodes(key, node->key))
         {
-            node->left = deleteNode(node->left, key);
-            writes++;
-            reads++;
+            node->left = write_node(deleteNode(read_node(node->left), key));
         }
         else if (compare_nodes(node->key, key))
         {
-            node->right = deleteNode(node->right, key);
-            writes++;
-            reads++;
+            node->right = write_node(deleteNode(read_node(node->right), key));
         }
         else
         {
-            if (node->left == nullptr)
+            if (read_node(node->left) == nullptr)
             {
-                reads++;
-                Node* temp = node->right;
-                writes++;
-                reads++;
+                Node* temp = write_node(read_node(node->right));
                 delete node;
                 return temp;
             }
-            else if (node->right == nullptr)
+            else if (read_node(node->right) == nullptr)
             {
-                reads++;
-                Node* temp = node->left;
-                writes++;
-                reads++;
+                Node* temp = write_node(read_node(node->left));
                 delete node;
                 return temp;
             }
             else
             {
-                Node* temp = findMin(node->right);
-                reads++;
+                Node* temp = write_node(findMin(read_node(node->right)));
                 node->key = temp->key;
-                node->right = deleteNode(node->right, temp->key);
-                writes++;
-                reads++;
+                node->right = write_node(deleteNode(read_node(node->right), temp->key));
             }
         }
 
@@ -99,8 +86,8 @@ private:
             return 0;
         }
 
-        int leftHeight = height(node->left);
-        int rightHeight = height(node->right);
+        int leftHeight = height(read_node(node->left));
+        int rightHeight = height(read_node(node->right));
 
         return std::max(leftHeight, rightHeight) + 1;
     }

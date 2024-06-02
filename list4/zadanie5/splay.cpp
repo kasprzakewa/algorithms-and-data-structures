@@ -1,98 +1,134 @@
 #include <iostream>
+#include "../include/lib.hpp"
 
-class SplayTree {
+class SPT
+{
 private:
-    struct Node {
-        int key;
-        Node* left;
-        Node* right;
 
-        Node(int key) : key(key), left(nullptr), right(nullptr) {}
-    };
+    SPTNode* root;
 
-    Node* root;
-
-    Node* rightRotate(Node* x) {
-        Node* y = x->left;
+    SPTNode* rightRotate(SPTNode* x) 
+    {
+        SPTNode* y = x->left;
         x->left = y->right;
         y->right = x;
+
         return y;
     }
 
-    Node* leftRotate(Node* x) {
-        Node* y = x->right;
+    SPTNode* leftRotate(SPTNode* x) 
+    {
+        SPTNode* y = x->right;
         x->right = y->left;
         y->left = x;
+
         return y;
     }
 
-    Node* splay(Node* root, int key) {
+    SPTNode* splay(SPTNode* root, int key) 
+    {
         if (root == nullptr || root->key == key) return root;
 
-        if (key < root->key) {
-            if (root->left == nullptr) return root;
-            if (key < root->left->key) {
+        if (key < root->key) 
+        {
+            if (root->left == nullptr) 
+                return root;
+
+            if (key < root->left->key) 
+            {
                 root->left->left = splay(root->left->left, key);
                 root = rightRotate(root);
-            } else if (key > root->left->key) {
+            } 
+            else if (key > root->left->key) 
+            {
                 root->left->right = splay(root->left->right, key);
-                if (root->left->right != nullptr) root->left = leftRotate(root->left);
+
+                if (root->left->right != nullptr) 
+                    root->left = leftRotate(root->left);
             }
 
             return (root->left == nullptr) ? root : rightRotate(root);
-        } else {
-            if (root->right == nullptr) return root;
-            if (key > root->right->key) {
+        } 
+        else 
+        {
+            if (root->right == nullptr) 
+                return root;
+
+            if (key > root->right->key) 
+            {
                 root->right->right = splay(root->right->right, key);
                 root = leftRotate(root);
-            } else if (key < root->right->key) {
+            } 
+            else if (key < root->right->key) 
+            {
                 root->right->left = splay(root->right->left, key);
-                if (root->right->left != nullptr) root->right = rightRotate(root->right);
+
+                if (root->right->left != nullptr) 
+                    root->right = rightRotate(root->right);
             }
 
             return (root->right == nullptr) ? root : leftRotate(root);
         }
     }
 
-    Node* insert(Node* root, int key) {
-        if (root == nullptr) return new Node(key);
+    SPTNode* insert(SPTNode* root, int key) 
+    {
+        if (root == nullptr) 
+            return new SPTNode(key);
 
         root = splay(root, key);
 
-        if (key < root->key) {
-            Node* newNode = new Node(key);
+        if (key < root->key) 
+        {
+            SPTNode* newNode = new SPTNode(key);
+
             newNode->right = root;
             newNode->left = root->left;
             root->left = nullptr;
+
             return newNode;
-        } else if (key > root->key) {
-            Node* newNode = new Node(key);
+        } 
+        else if (key > root->key) 
+        {
+            SPTNode* newNode = new SPTNode(key);
+
             newNode->left = root;
             newNode->right = root->right;
             root->right = nullptr;
+
             return newNode;
-        } else {
-            return root; // Key already exists
+        } 
+        else 
+        {
+            return root;
         }
     }
 
-    Node* findMax(Node* root) {
-        while (root->right != nullptr) root = root->right;
+    SPTNode* findMax(SPTNode* root) 
+    {
+        while (root->right != nullptr) 
+            root = root->right;
+
         return root;
     }
 
-    Node* deleteNode(Node* root, int key) {
+    SPTNode* deleteNode(SPTNode* root, int key) 
+    {
         if (root == nullptr) return nullptr;
 
         root = splay(root, key);
 
-        if (root->key != key) return root; // Key not found
+        if (root->key != key) 
+            return root;
 
-        Node* temp;
-        if (root->left == nullptr) {
+        SPTNode* temp;
+        if (root->left == nullptr) 
+        {
             temp = root;
             root = root->right;
-        } else {
+        } 
+        else 
+        {
             temp = root;
             root = splay(root->left, key);
             root->right = temp->right;
@@ -102,13 +138,19 @@ private:
         return root;
     }
 
-    void printTree(Node* node, std::string indent, bool isLeft) {
-        if (node != nullptr) {
+    void printTree(SPTNode* node, std::string indent, bool isLeft) 
+    {
+        if (node != nullptr) 
+        {
             std::cout << indent;
-            if (isLeft) {
+
+            if (isLeft) 
+            {
                 std::cout << "/-- ";
                 indent += "|   ";
-            } else {
+            } 
+            else 
+            {
                 std::cout << "\\-- ";
                 indent += "    ";
             }
@@ -120,28 +162,33 @@ private:
     }
 
 public:
-    SplayTree() : root(nullptr) {}
+    SPT() : root(nullptr) {}
 
-    void insert(int key) {
+    void insert(int key) 
+    {
         root = insert(root, key);
     }
 
-    bool search(int key) {
+    bool search(int key) 
+    {
         root = splay(root, key);
         return (root != nullptr && root->key == key);
     }
 
-    void remove(int key) {
+    void remove(int key) 
+    {
         root = deleteNode(root, key);
     }
 
-    void printTree() {
+    void printTree() 
+    {
         printTree(root, "", true);
     }
 };
 
-int main() {
-    SplayTree tree;
+int main() 
+{
+    SPT tree;
 
     tree.insert(10);
     tree.insert(20);

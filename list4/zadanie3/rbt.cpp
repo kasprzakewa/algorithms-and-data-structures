@@ -1,33 +1,25 @@
 #include <iostream>
 #include <algorithm>
+#include "../include/lib.hpp"
+#include "../generators/ascending.hpp"
+#include "../generators/random.hpp"
+#include <vector>
+#include <chrono>
+#include <cstdlib>
 
 class RedBlackBST 
 {
 private:
-    static const bool RED = true;
-    static const bool BLACK = false;
+    RBTNode* root;
 
-    struct Node 
+    RBTNode* insert(RBTNode* root, RBTNode* node) 
     {
-        int key;
-        Node* left;
-        Node* right;
-        Node* parent;
-        bool color;
-
-        Node(int key) : key(key), left(nullptr), right(nullptr), parent(nullptr), color(RED) {}
-    };
-
-    Node* root;
-
-    Node* insert(Node* root, Node* node) 
-    {
-        if (root == nullptr) 
+        if (read_node(root) == nullptr) 
         {
             return node;
         }
 
-        if (node->key < root->key) 
+        if (compare_nodes(node->key, root->key)) 
         {
             root->left = insert(root->left, node);
             root->left->parent = root;
@@ -41,9 +33,9 @@ private:
         return root;
     }
 
-    void fixAfterInsertion(Node* node) 
+    void fixAfterInsertion(RBTNode* node) 
 {
-    Node *parent = nullptr, *grandparent = nullptr, *uncle = nullptr;
+    RBTNode *parent = nullptr, *grandparent = nullptr, *uncle = nullptr;
 
     while ((node != root) && (node->color != BLACK) && (node->parent->color == RED)) 
     {
@@ -122,9 +114,9 @@ private:
     root->color = BLACK;
 }
 
-    void rotateLeft(Node* node) 
+    void rotateLeft(RBTNode* node) 
     {
-        Node* right = node->right;
+        RBTNode* right = node->right;
         node->right = right->left;
 
         if (right->left != nullptr) 
@@ -151,9 +143,9 @@ private:
         node->parent = right;
     }
 
-    void rotateRight(Node* node) 
+    void rotateRight(RBTNode* node) 
     {
-        Node* left = node->left;
+        RBTNode* left = node->left;
         node->left = left->right;
 
         if (left->right != nullptr) 
@@ -180,7 +172,7 @@ private:
         node->parent = left;
     }
 
-    Node* findNode(Node* root, int key) 
+    RBTNode* findNode(RBTNode* root, int key) 
     {
         while (root != nullptr) 
         {
@@ -201,7 +193,7 @@ private:
         return nullptr;
     }
 
-    Node* minimum(Node* node) 
+    RBTNode* minimum(RBTNode* node) 
     {
         while (node->left != nullptr) 
         {
@@ -211,16 +203,16 @@ private:
         return node;
     }
 
-    void deleteNode(Node* node) 
+    void deleteNode(RBTNode* node) 
     {
         if (node->left != nullptr && node->right != nullptr) 
         {
-            Node* successor = minimum(node->right);
+            RBTNode* successor = minimum(node->right);
             node->key = successor->key;
             node = successor;
         }
 
-        Node* replacement = (node->left != nullptr) ? node->left : node->right;
+        RBTNode* replacement = (node->left != nullptr) ? node->left : node->right;
 
         if (replacement != nullptr) 
         {
@@ -273,13 +265,13 @@ private:
         }
     }
 
-    void fixAfterDeletion(Node* node) 
+    void fixAfterDeletion(RBTNode* node) 
     {
         while (node != root && colorOf(node) == BLACK) 
         {
             if (node == leftOf(parentOf(node))) 
             {
-                Node* sibling = rightOf(parentOf(node));
+                RBTNode* sibling = rightOf(parentOf(node));
 
                 if (colorOf(sibling) == RED) 
                 {
@@ -313,7 +305,7 @@ private:
             } 
             else 
             {
-                Node* sibling = leftOf(parentOf(node));
+                RBTNode* sibling = leftOf(parentOf(node));
 
                 if (colorOf(sibling) == RED) 
                 {
@@ -350,27 +342,27 @@ private:
         setColor(node, BLACK);
     }
 
-    bool colorOf(Node* node) 
+    bool colorOf(RBTNode* node) 
     {
         return node == nullptr ? BLACK : node->color;
     }
 
-    Node* parentOf(Node* node) 
+    RBTNode* parentOf(RBTNode* node) 
     {
         return node == nullptr ? nullptr : node->parent;
     }
 
-    Node* leftOf(Node* node) 
+    RBTNode* leftOf(RBTNode* node) 
     {
         return node == nullptr ? nullptr : node->left;
     }
 
-    Node* rightOf(Node* node) 
+    RBTNode* rightOf(RBTNode* node) 
     {
         return node == nullptr ? nullptr : node->right;
     }
 
-    void setColor(Node* node, bool color) 
+    void setColor(RBTNode* node, bool color) 
     {
         if (node != nullptr) 
         {
@@ -378,7 +370,7 @@ private:
         }
     }
 
-    int height(Node* node) 
+    int height(RBTNode* node) 
     {
         if (node == nullptr) 
         {
@@ -388,7 +380,7 @@ private:
         return 1 + std::max(height(node->left), height(node->right));
     }
 
-void printTree(Node* node, std::string indent, bool isLeft) 
+void printTree(RBTNode* node, std::string indent, bool isLeft) 
 {
     if (node != nullptr) 
     {
@@ -421,14 +413,14 @@ public:
 
     void insert(int key) 
     {
-        Node* node = new Node(key);
+        RBTNode* node = new RBTNode(key);
         root = insert(root, node);
         fixAfterInsertion(node);
     }
 
     void deleteKey(int key) 
     {
-        Node* node = findNode(root, key);
+        RBTNode* node = findNode(root, key);
 
         if (node == nullptr) return;
 
@@ -448,23 +440,34 @@ public:
 
 int main() 
 {
-    RedBlackBST tree;
+    RedBlackBST rbt;
 
-    tree.insert(7);
-    tree.insert(0);
-    tree.insert(6);
-    tree.insert(2);
-    tree.insert(1);
+    auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+    std::srand(static_cast<unsigned int>(seed));
 
-    std::cout << "Tree structure:" << std::endl;
-    tree.printTree();
+    clear();
+    std::vector<int> keys = ascending(100000);
 
-    tree.deleteKey(7);
-    tree.deleteKey(1);
-    tree.deleteKey(4);
+    for (int key : keys)
+    {
+        rbt.insert(key);
+    }
 
-    std::cout << "Tree structure after deletions:" << std::endl;
-    tree.printTree();
+    int height = rbt.height();
 
+    std::cout << "Height after insert: " << height << std::endl;
+
+    clear();
+    std::vector<int> keysToDelete = random(100000);
+
+    for (int key : keysToDelete)
+    {
+        rbt.deleteKey(key);
+    }
+
+    int height2 = rbt.height();
+
+    std::cout << "Height after delete: " << height2 << std::endl;
+    
     return 0;
 }
